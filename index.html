@@ -48,18 +48,31 @@
         }
     </style>
     <script>
-        // 페이지가 열리자마자 스팀 앱 스킴 실행 시도
         window.onload = function() {
-            var steamAppUrl = "steam://url/StoreAppPage/4677140";
+            var userAgent = navigator.userAgent.toLowerCase();
             var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
 
-            // 스팀 앱으로 이동 시도
-            window.location.href = steamAppUrl;
+            // 1. 안드로이드 기기일 때 (안드로이드 전용 인텐트 규격 사용)
+            if (userAgent.indexOf("android") > -1) {
+                // 안드로이드는 intent:// 형식을 써야 앱이 설치된 경우 앱을 바로 켭니다.
+                // 앱이 없으면 구글 플레이스토어의 스팀 앱 페이지로 튕기거나 웹으로 가도록 fallback 설정
+                var androidIntentUrl = "intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;end;";
+                window.location.href = androidIntentUrl;
+            } 
+            // 2. 아이폰(iOS) 기기일 때
+            else if (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) {
+                var iosAppUrl = "steam://url/StoreAppPage/4677140";
+                window.location.href = iosAppUrl;
 
-            // 일정 시간(1.5초) 뒤에도 페이지가 그대로 남아있다면(앱이 없다는 뜻) 웹 스토어로 이동
-            setTimeout(function() {
+                // 아이폰은 앱이 없으면 1.5초 뒤 웹 스토어로 백업 이동
+                setTimeout(function() {
+                    window.location.href = steamWebUrl;
+                }, 1500);
+            } 
+            // 3. PC나 기타 기기일 때
+            else {
                 window.location.href = steamWebUrl;
-            }, 1500);
+            }
         };
     </script>
 </head>
@@ -68,7 +81,7 @@
         <h2>스팀 앱으로 이동 중입니다...</h2>
         <p>잠시만 기다려주세요. 자동으로 스팀 앱이 열리지 않으면 아래 버튼을 눌러주세요.</p>
         
-        <!-- 혹시 리디렉션이 막히거나 수동으로 누르고 싶을 때를 대비한 버튼 -->
+        <!-- 수동 이동 버튼 -->
         <a href="https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/" class="btn">스팀 웹페이지로 이동</a>
     </div>
 </body>
