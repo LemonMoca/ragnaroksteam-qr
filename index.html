@@ -20,6 +20,7 @@
         }
         .container {
             max-width: 400px;
+            width: 100%;
         }
         h2 {
             font-size: 20px;
@@ -30,21 +31,29 @@
             font-size: 14px;
             margin-bottom: 25px;
         }
-        .btn {
-            display: inline-block;
-            background: linear-gradient(to right, #2a475e, #1b2838);
+        .btn-app {
+            display: block;
+            background: #2a475e;
             color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 4px;
+            padding: 15px 24px;
+            border-radius: 6px;
             text-decoration: none;
             font-weight: bold;
-            border: 1px solid #417a9b;
-            margin-bottom: 15px;
-            width: 100%;
+            font-size: 16px;
+            border: 1px solid #66c0f4;
+            margin-bottom: 12px;
             box-sizing: border-box;
         }
-        .btn:hover {
-            background: linear-gradient(to right, #355c7d, #2a475e);
+        .btn-web {
+            display: block;
+            background: transparent;
+            color: #8f98a0;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            border: 1px solid #417a9b;
+            box-sizing: border-box;
         }
     </style>
     <script>
@@ -52,42 +61,26 @@
             var userAgent = navigator.userAgent.toLowerCase();
             var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
 
-            // 1. 안드로이드 기기일 때
-            if (userAgent.indexOf("android") > -1) {
-                // 플레이스토어 강제 이동 경로(S.browser_fallback_url)를 완전히 제거하여,
-                // 앱이 설치된 경우 무조건 스팀 앱 내부의 상점 페이지로 직행하도록 설정
-                var androidIntentUrl = "intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;end;";
-                
-                window.location.href = androidIntentUrl;
-
-                // 만약 앱이 없어서 앱이 안 열리고 페이지에 그대로 머물 경우, 1.5초 뒤 웹 스토어로 백업 이동
+            // 아이폰은 기존처럼 자동 진입 시도 유지
+            if (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) {
+                window.location.href = "steam://url/StoreAppPage/4677140";
                 setTimeout(function() {
                     window.location.href = steamWebUrl;
                 }, 1500);
-            } 
-            // 2. 아이폰(iOS) 기기일 때
-            else if (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) {
-                var iosAppUrl = "steam://url/StoreAppPage/4677140";
-                window.location.href = iosAppUrl;
-
-                setTimeout(function() {
-                    window.location.href = steamWebUrl;
-                }, 1500);
-            } 
-            // 3. PC나 기타 기기일 때
-            else {
-                window.location.href = steamWebUrl;
             }
         };
     </script>
 </head>
 <body>
     <div class="container">
-        <h2>스팀 앱으로 이동 중입니다...</h2>
-        <p>잠시만 기다려주세요. 자동으로 스팀 앱이 열리지 않으면 아래 버튼을 눌러주세요.</p>
+        <h2>RAGNAROK PROJECT</h2>
+        <p>스팀 앱이 설치되어 있다면 버튼을 눌러 바로 위시리스트에 추가하세요!</p>
         
-        <!-- 수동 이동 버튼 -->
-        <a href="https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/" class="btn">스팀 웹페이지로 이동</a>
+        <!-- 안드로이드/아이폰 양쪽 모두 앱을 확실하게 띄우는 직행 버튼 -->
+        <a href="intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;end;" class="btn-app">스팀 앱에서 열기</a>
+        
+        <!-- 앱이 없을 때 쓰는 웹 브라우저 이동 버튼 -->
+        <a href="https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/" class="btn-web">웹 브라우저로 이동</a>
     </div>
 </body>
 </html>
