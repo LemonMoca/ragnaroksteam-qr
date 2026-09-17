@@ -61,7 +61,7 @@
             var userAgent = navigator.userAgent.toLowerCase();
             var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
 
-            // 아이폰은 기존처럼 자동 진입 시도 유지
+            // 아이폰은 자동 진입 시도 유지
             if (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) {
                 window.location.href = "steam://url/StoreAppPage/4677140";
                 setTimeout(function() {
@@ -76,10 +76,10 @@
         <h2>RAGNAROK PROJECT</h2>
         <p>스팀 앱이 설치되어 있다면 버튼을 눌러 바로 위시리스트에 추가하세요!</p>
         
-        <!-- 안드로이드/아이폰 양쪽 모두 앱을 확실하게 띄우는 직행 버튼 -->
-        <a href="intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;end;" class="btn-app">스팀 앱에서 열기</a>
+        <!-- 안드로이드 폴백 주소가 포함된 안전한 인텐트 링크 -->
+        <a href="intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;S.browser_fallback_url=https%3A%2F%2Fstore.steampowered.com%2Fapp%2F4677140%2FRAGNAROK_PROJECT%2F;end;" class="btn-app">스팀 앱에서 열기</a>
         
-        <!-- 앱이 없을 때 쓰는 웹 브라우저 이동 버튼 -->
+        <!-- 웹 브라우저 이동 버튼 -->
         <a href="https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/" class="btn-web">웹 브라우저로 이동</a>
     </div>
 </body>
