@@ -58,59 +58,33 @@
     </style>
     <script>
         var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
-        var steamAppUrl = "steam://url/StoreAppPage/4677140";
 
-        function tryOpenSteamAndroid() {
-            var appOpened = false;
-            var fallbackTimer;
+        // Android: intent://로 앱/웹 자동 분기
+        var steamAndroidUrl = "intent://url/StoreAppPage/4677140"
+            + "#Intent"
+            + ";scheme=steam"
+            + ";package=com.valvesoftware.android.steam.community"
+            + ";S.browser_fallback_url=" + encodeURIComponent(steamWebUrl)
+            + ";end";
 
-            // 앱 전환 감지 핸들러
-            function onAppSwitch() {
-                if (!appOpened) {
-                    appOpened = true;
-                    clearTimeout(fallbackTimer);
-                }
-            }
+        // iOS: 유니버설 링크 사용 (앱 설치 시 앱으로, 미설치 시 웹으로 자동 분기)
+        var steamIOSUrl = "https://s.team/a/4677140";
 
-            // visibilitychange / pagehide / blur 세 가지 모두 감지
-            document.addEventListener("visibilitychange", function () {
-                if (document.hidden) onAppSwitch();
-            });
-            window.addEventListener("pagehide", onAppSwitch);
-            window.addEventListener("blur", onAppSwitch);
-
-            // steam:// 시도
-            window.location.href = steamAppUrl;
-
-            // 앱이 없거나 전환 감지 실패 시 fallback (3000ms로 여유있게)
-            fallbackTimer = setTimeout(function () {
-                if (!appOpened) {
-                    window.location.href = steamWebUrl;
-                }
-            }, 3000);
-        }
-
-        window.onload = function () {
-            var ua = navigator.userAgent.toLowerCase();
-            var isIOS = /iphone|ipad|ipod/.test(ua);
-            var isAndroid = /android/.test(ua);
-
-            if (isIOS) {
-                window.location.href = steamAppUrl;
-                setTimeout(function () {
-                    window.location.href = steamWebUrl;
-                }, 1500);
-
-            } else if (isAndroid) {
-                tryOpenSteamAndroid();
-            }
-        };
-
-        function openSteamAndroid(e) {
-            var ua = navigator.userAgent.toLowerCase();
-            if (!/android/.test(ua)) return;
+        function openSteamApp(e) {
             e.preventDefault();
-            tryOpenSteamAndroid();
+            var ua = navigator.userAgent.toLowerCase();
+
+            if (/android/.test(ua)) {
+                window.location.href = steamAndroidUrl;
+
+            } else if (/iphone|ipad|ipod/.test(ua)) {
+                // 유니버설 링크: Safari가 앱 유무 자동 판단
+                window.location.href = steamIOSUrl;
+
+            } else {
+                // PC 등: 바로 웹으로
+                window.location.href = steamWebUrl;
+            }
         }
     </script>
 </head>
@@ -119,9 +93,9 @@
         <h2>RAGNAROK PROJECT</h2>
         <p>스팀 앱이 설치되어 있다면 버튼을 눌러 바로 위시리스트에 추가하세요!</p>
 
-        <a href="steam://url/StoreAppPage/4677140"
-           onclick="openSteamAndroid(event)"
-           class="btn-app">스팀 앱에서 열기</a>
+        <a href="#" onclick="openSteamApp(event)" class="btn-app">
+            스팀 앱에서 열기
+        </a>
 
         <a href="https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/"
            class="btn-web">웹 브라우저로 이동</a>
