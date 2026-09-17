@@ -60,6 +60,36 @@
         var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
         var steamAppUrl = "steam://url/StoreAppPage/4677140";
 
+        function tryOpenSteamAndroid() {
+            var appOpened = false;
+            var fallbackTimer;
+
+            // 앱 전환 감지 핸들러
+            function onAppSwitch() {
+                if (!appOpened) {
+                    appOpened = true;
+                    clearTimeout(fallbackTimer);
+                }
+            }
+
+            // visibilitychange / pagehide / blur 세 가지 모두 감지
+            document.addEventListener("visibilitychange", function () {
+                if (document.hidden) onAppSwitch();
+            });
+            window.addEventListener("pagehide", onAppSwitch);
+            window.addEventListener("blur", onAppSwitch);
+
+            // steam:// 시도
+            window.location.href = steamAppUrl;
+
+            // 앱이 없거나 전환 감지 실패 시 fallback (3000ms로 여유있게)
+            fallbackTimer = setTimeout(function () {
+                if (!appOpened) {
+                    window.location.href = steamWebUrl;
+                }
+            }, 3000);
+        }
+
         window.onload = function () {
             var ua = navigator.userAgent.toLowerCase();
             var isIOS = /iphone|ipad|ipod/.test(ua);
@@ -72,37 +102,15 @@
                 }, 1500);
 
             } else if (isAndroid) {
-                var fallbackTimer = setTimeout(function () {
-                    window.location.href = steamWebUrl;
-                }, 2000);
-
-                document.addEventListener("visibilitychange", function () {
-                    if (document.hidden) {
-                        clearTimeout(fallbackTimer);
-                    }
-                });
-
-                window.location.href = steamAppUrl;
+                tryOpenSteamAndroid();
             }
         };
 
         function openSteamAndroid(e) {
             var ua = navigator.userAgent.toLowerCase();
             if (!/android/.test(ua)) return;
-
             e.preventDefault();
-
-            var fallbackTimer = setTimeout(function () {
-                window.location.href = steamWebUrl;
-            }, 2000);
-
-            document.addEventListener("visibilitychange", function () {
-                if (document.hidden) {
-                    clearTimeout(fallbackTimer);
-                }
-            });
-
-            window.location.href = steamAppUrl;
+            tryOpenSteamAndroid();
         }
     </script>
 </head>
