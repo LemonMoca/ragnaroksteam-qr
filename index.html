@@ -52,19 +52,24 @@
             var userAgent = navigator.userAgent.toLowerCase();
             var steamWebUrl = "https://store.steampowered.com/app/4677140/RAGNAROK_PROJECT/";
 
-            // 1. 안드로이드 기기일 때 (안드로이드 전용 인텐트 규격 사용)
+            // 1. 안드로이드 기기일 때
             if (userAgent.indexOf("android") > -1) {
-                // 안드로이드는 intent:// 형식을 써야 앱이 설치된 경우 앱을 바로 켭니다.
-                // 앱이 없으면 구글 플레이스토어의 스팀 앱 페이지로 튕기거나 웹으로 가도록 fallback 설정
+                // 플레이스토어 강제 이동 경로(S.browser_fallback_url)를 완전히 제거하여,
+                // 앱이 설치된 경우 무조건 스팀 앱 내부의 상점 페이지로 직행하도록 설정
                 var androidIntentUrl = "intent://url/StoreAppPage/4677140#Intent;scheme=steam;package=com.valvesoftware.android.steam.community;end;";
+                
                 window.location.href = androidIntentUrl;
+
+                // 만약 앱이 없어서 앱이 안 열리고 페이지에 그대로 머물 경우, 1.5초 뒤 웹 스토어로 백업 이동
+                setTimeout(function() {
+                    window.location.href = steamWebUrl;
+                }, 1500);
             } 
             // 2. 아이폰(iOS) 기기일 때
             else if (userAgent.indexOf("iphone") > -1 || userAgent.indexOf("ipad") > -1) {
                 var iosAppUrl = "steam://url/StoreAppPage/4677140";
                 window.location.href = iosAppUrl;
 
-                // 아이폰은 앱이 없으면 1.5초 뒤 웹 스토어로 백업 이동
                 setTimeout(function() {
                     window.location.href = steamWebUrl;
                 }, 1500);
